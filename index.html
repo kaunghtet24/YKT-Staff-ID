@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Yay Khae Taung Mobile — Staff ID</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🪪</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<style>
+  :root {
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    --bg-0: #EEF2F7; --bg-1: #E4EAF3;
+    --blob-a: #7C9CFF; --blob-b: #C084FC; --blob-c: #5EEAD4;
+    --glass-bg: rgba(255,255,255,0.55); --glass-bg-strong: rgba(255,255,255,0.72);
+    --glass-border: rgba(255,255,255,0.9); --glass-shadow: rgba(60,70,110,0.18);
+    --text-0: #10131A; --text-1: #454C5C; --text-2: #6B7386;
+    --accent: #4C6FFF; --accent-2: #9333EA; --danger: #E0455A; --ok: #1FA97E;
+    --input-bg: rgba(255,255,255,0.6); --divider: rgba(20,25,40,0.08);
+  }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg-0: #080B12; --bg-1: #0D1220; --blob-a: #3A5CFF; --blob-b: #8B31E8; --blob-c: #14B8A6;
+      --glass-bg: rgba(255,255,255,0.06); --glass-bg-strong: rgba(255,255,255,0.1);
+      --glass-border: rgba(255,255,255,0.16); --glass-shadow: rgba(0,0,0,0.5);
+      --text-0: #F4F6FB; --text-1: #C4CBDA; --text-2: #8891A6;
+      --accent: #6E8CFF; --accent-2: #C084FC; --danger: #FF6B7F; --ok: #3DDC9A;
+      --input-bg: rgba(255,255,255,0.07); --divider: rgba(255,255,255,0.1);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg-0: #080B12; --bg-1: #0D1220; --blob-a: #3A5CFF; --blob-b: #8B31E8; --blob-c: #14B8A6;
+    --glass-bg: rgba(255,255,255,0.06); --glass-bg-strong: rgba(255,255,255,0.1);
+    --glass-border: rgba(255,255,255,0.16); --glass-shadow: rgba(0,0,0,0.5);
+    --text-0: #F4F6FB; --text-1: #C4CBDA; --text-2: #8891A6;
+    --accent: #6E8CFF; --accent-2: #C084FC; --danger: #FF6B7F; --ok: #3DDC9A;
+    --input-bg: rgba(255,255,255,0.07); --divider: rgba(255,255,255,0.1);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; background: var(--bg-0); }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--text-0); min-height: 100%; overflow-x: hidden; position: relative;
+    transition: background 0.4s ease, color 0.4s ease;
+  }
+  h1, h2, h3, .display { font-family: 'Sora', 'Inter', sans-serif; }
+  .blobs { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+  .blob { position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.55; will-change: transform; }
+  .blob-1 { width: 44vmax; height: 44vmax; background: var(--blob-a); top: -18vmax; left: -14vmax; animation: float1 22s ease-in-out infinite; }
+  .blob-2 { width: 38vmax; height: 38vmax; background: var(--blob-b); bottom: -16vmax; right: -12vmax; animation: float2 26s ease-in-out infinite; }
+  .blob-3 { width: 26vmax; height: 26vmax; background: var(--blob-c); top: 38%; left: 58%; animation: float3 30s ease-in-out infinite; opacity: 0.35; }
+  @media (prefers-reduced-motion: reduce) { .blob { animation: none !important; } }
+  @keyframes float1 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(6vmax, 8vmax) scale(1.08); } }
+  @keyframes float2 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(-7vmax,-5vmax) scale(1.1); } }
+  @keyframes float3 { 0%,100% { transform: translate(0,0); } 50% { transform: translate(-4vmax, 5vmax); } }
+  .wrap { position: relative; z-index: 1; min-height: 100%; display: flex; flex-direction: column; align-items: center; padding: max(24px, env(safe-area-inset-top)) 20px 28px; }
+  .glass { background: var(--glass-bg); border: 1px solid var(--glass-border); backdrop-filter: blur(22px) saturate(160%); -webkit-backdrop-filter: blur(22px) saturate(160%); border-radius: 26px; box-shadow: 0 8px 32px var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,0.25); }
+  header { width: 100%; max-width: 560px; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 6px 30px; }
+  .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+  .mark { width: 42px; height: 42px; border-radius: 14px; background: linear-gradient(135deg, var(--accent), var(--accent-2)); display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 4px 18px rgba(90,90,220,0.35); }
+  .mark svg { width: 22px; height: 22px; }
+  .brand-name { font-weight: 700; font-size: 16px; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .brand-sub { font-size: 12px; color: var(--text-2); }
+  .icon-btn { width: 42px; height: 42px; border-radius: 14px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid var(--glass-border); background: var(--glass-bg); color: var(--text-1); transition: transform 0.15s ease; flex-shrink: 0; }
+  .icon-btn:hover { transform: translateY(-1px); }
+  .icon-btn:active { transform: translateY(0px) scale(0.96); }
+  .icon-btn svg { width: 19px; height: 19px; }
+  .header-actions { display: flex; gap: 10px; }
+  main { width: 100%; max-width: 560px; display: flex; flex-direction: column; align-items: center; flex: 1; }
+  .hero-text { text-align: center; margin-bottom: 22px; padding: 0 8px; }
+  .hero-text h1 { font-size: 26px; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 8px; }
+  .hero-text p { color: var(--text-2); font-size: 14.5px; line-height: 1.5; }
+  .search-card { width: 100%; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+  .search-row { display: flex; gap: 10px; }
+  .search-field { flex: 1; display: flex; align-items: center; gap: 10px; background: var(--input-bg); border: 1px solid var(--glass-border); border-radius: 16px; padding: 0 14px; height: 52px; }
+  .search-field svg { width: 18px; height: 18px; color: var(--text-2); flex-shrink: 0; }
+  .search-field input { flex: 1; border: none; outline: none; background: transparent; color: var(--text-0); font-size: 16px; font-family: inherit; min-width: 0; }
+  .search-field input::placeholder { color: var(--text-2); }
+  .btn-primary { height: 52px; padding: 0 22px; border: none; border-radius: 16px; background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff; font-weight: 600; font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 6px 20px rgba(90,90,220,0.3); transition: transform 0.15s ease; flex-shrink: 0; }
+  .btn-primary:hover { transform: translateY(-1px); }
+  .btn-primary:active { transform: translateY(0); }
+  .live-note { display: flex; align-items: center; justify-content: space-between; gap: 7px; font-size: 12px; color: var(--text-2); padding-left: 4px; }
+  .live-left { display:flex; align-items:center; gap:7px; }
+  .live-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 3px rgba(61,220,154,0.18); flex-shrink: 0; }
+  .live-dot.offline { background: var(--text-2); box-shadow: none; }
+  .refresh-btn { background:none; border:none; color: var(--text-2); font-size: 12px; cursor: pointer; font-family: inherit; text-decoration: underline; }
+  #results { width: 100%; margin-top: 18px; display: flex; flex-direction: column; gap: 12px; }
+  .state-msg { padding: 26px 22px; text-align: center; color: var(--text-2); font-size: 14.5px; line-height: 1.6; }
+  .state-msg strong { color: var(--text-0); display: block; margin-bottom: 4px; font-size: 15.5px; }
+  .state-msg code { background: var(--input-bg); padding: 2px 6px; border-radius: 6px; font-size: 12.5px; }
+  .match-list { display: flex; flex-direction: column; gap: 8px; padding: 10px; }
+  .match-item { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 16px; cursor: pointer; transition: background 0.15s ease; background: transparent; border: 1px solid transparent; }
+  .match-item:hover { background: var(--glass-bg-strong); border-color: var(--glass-border); }
+  .avatar-sm { width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px; color:#fff; }
+  .match-item .name { font-weight: 600; font-size: 14.5px; }
+  .match-item .pos { font-size: 12.5px; color: var(--text-2); }
+  @keyframes cardIn { from { opacity: 0; transform: translateY(10px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+  .id-card { padding: 26px 24px; animation: cardIn 0.45s cubic-bezier(.2,.8,.2,1); position: relative; overflow: hidden; }
+  .id-card::before { content: ''; position: absolute; inset: -40% -40% auto auto; width: 60%; height: 140%; background: radial-gradient(circle, var(--accent) 0%, transparent 70%); opacity: 0.18; pointer-events: none; }
+  .id-top { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; position: relative; }
+  .avatar-lg { width: 56px; height: 56px; border-radius: 18px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 20px; color: #fff; }
+  .id-top h2 { font-size: 19px; font-weight: 700; margin-bottom: 3px; }
+  .id-top .role { font-size: 13.5px; color: var(--text-2); }
+  .id-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; position: relative; }
+  .id-field { padding: 12px 14px; border-radius: 14px; background: var(--input-bg); border: 1px solid var(--divider); }
+  .id-field .label { font-size: 11px; color: var(--text-2); margin-bottom: 4px; }
+  .id-field .value { font-size: 14.5px; font-weight: 600; word-break: break-word; }
+  .id-field.full { grid-column: 1 / -1; }
+  .id-field.code .value { font-family: 'Sora', monospace; letter-spacing: 0.02em; color: var(--accent); font-size: 16px; }
+  .id-actions { display: flex; gap: 10px; margin-top: 16px; position: relative; }
+  .btn-ghost { flex: 1; height: 44px; border-radius: 14px; border: 1px solid var(--glass-border); background: var(--glass-bg); color: var(--text-0); font-size: 13.5px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px; transition: background 0.15s ease, transform 0.15s ease; }
+  .btn-ghost:hover { background: var(--glass-bg-strong); transform: translateY(-1px); }
+  .btn-ghost svg { width: 15px; height: 15px; }
+  footer { width: 100%; max-width: 560px; margin-top: auto; padding-top: 28px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+  .social-row { display: flex; gap: 10px; padding: 8px; }
+  .social-pill { display: flex; align-items: center; gap: 9px; padding: 11px 18px; border-radius: 999px; text-decoration: none; color: var(--text-0); font-size: 13.5px; font-weight: 600; transition: transform 0.15s ease, background 0.2s ease; }
+  .social-pill:hover { transform: translateY(-2px); background: var(--glass-bg-strong); }
+  .social-pill svg { width: 17px; height: 17px; }
+  .social-pill.tiktok svg { color: #25F4EE; }
+  .social-pill.facebook svg { color: #1877F2; }
+  .copyright { font-size: 11.5px; color: var(--text-2); text-align: center; padding-bottom: 6px; }
+  #toast { position: fixed; left: 50%; bottom: max(24px, env(safe-area-inset-bottom)); transform: translate(-50%, 20px); padding: 12px 20px; border-radius: 14px; font-size: 13.5px; font-weight: 500; opacity: 0; pointer-events: none; transition: all 0.25s ease; z-index: 100; max-width: 90vw; text-align: center; }
+  #toast.show { opacity: 1; transform: translate(-50%, 0); }
+  #toast.ok { background: var(--ok); color: #06231a; }
+  #toast.err { background: var(--danger); color: #2a0810; }
+  .admin-fab { position: fixed; right: max(18px, env(safe-area-inset-right, 18px)); bottom: max(18px, env(safe-area-inset-bottom)); width: 50px; height: 50px; border-radius: 50%; z-index: 40; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-0); transition: transform 0.15s ease; }
+  .admin-fab:hover { transform: translateY(-2px) scale(1.03); }
+  .admin-fab svg { width: 21px; height: 21px; }
+  .modal-overlay { position: fixed; inset: 0; z-index: 60; display: none; align-items: flex-end; justify-content: center; background: rgba(4,6,12,0.55); backdrop-filter: blur(4px); }
+  .modal-overlay.open { display: flex; }
+  @media (min-width: 640px) { .modal-overlay { align-items: center; } }
+  .modal { width: 100%; max-width: 460px; max-height: 88vh; overflow-y: auto; border-radius: 26px 26px 0 0; padding: 24px 22px max(24px, env(safe-area-inset-bottom)); animation: modalIn 0.3s cubic-bezier(.2,.8,.2,1); background: var(--bg-1); border: 1px solid var(--glass-border); box-shadow: 0 -10px 40px rgba(0,0,0,0.4); }
+  @media (min-width: 640px) { .modal { border-radius: 26px; max-height: 82vh; } }
+  @keyframes modalIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+  .modal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+  .modal-head h3 { font-size: 17px; font-weight: 700; }
+  .modal-close { width: 34px; height: 34px; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-2); background: var(--input-bg); }
+  .modal-close svg { width: 16px; height: 16px; }
+  .field { margin-bottom: 14px; }
+  .field label { display: block; font-size: 12.5px; color: var(--text-2); margin-bottom: 6px; font-weight: 500; }
+  .field input { width: 100%; height: 46px; border-radius: 13px; border: 1px solid var(--divider); background: var(--input-bg); color: var(--text-0); padding: 0 14px; font-size: 14.5px; font-family: inherit; outline: none; }
+  .field input:focus { border-color: var(--accent); }
+  .field-hint { font-size: 11.5px; color: var(--text-2); margin-top: 5px; line-height:1.5; }
+  .field-error { font-size: 12.5px; color: var(--danger); margin-top: 6px; min-height: 15px; }
+  .modal-btn { width: 100%; height: 48px; border-radius: 14px; border: none; background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff; font-weight: 600; font-size: 14.5px; cursor: pointer; margin-top: 4px; }
+  .modal-btn.secondary { background: var(--input-bg); color: var(--text-0); border: 1px solid var(--divider); }
+  .link-btn { background: none; border: none; color: var(--accent); font-size: 12.5px; cursor: pointer; padding: 8px 0; font-family: inherit; }
+  .hash-box { background: var(--input-bg); border: 1px solid var(--divider); border-radius: 12px; padding: 12px; font-family: monospace; font-size: 12px; word-break: break-all; margin: 10px 0; }
+  .info-row { display:flex; justify-content:space-between; padding: 10px 4px; border-bottom: 1px solid var(--divider); font-size: 13.5px; }
+  .info-row:last-child { border-bottom: none; }
+  .info-row span:first-child { color: var(--text-2); }
+  ::selection { background: var(--accent); color: #fff; }
+  @media (max-width: 380px) { .id-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<div class="blobs"><div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div></div>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="mark"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="2" width="16" height="20" rx="3" stroke="#fff" stroke-width="1.8"/><circle cx="12" cy="17" r="1.3" fill="#fff"/><line x1="9" y1="6" x2="15" y2="6" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+      <div style="min-width:0;"><div class="brand-name">Yay Khae Taung Mobile</div><div class="brand-sub">Staff Directory</div></div>
+    </div>
+    <div class="header-actions">
+      <div class="icon-btn glass" id="themeToggle" title="Toggle theme"><svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></svg></div>
+    </div>
+  </header>
+
+  <main>
+    <div class="hero-text">
+      <h1>Find your Staff ID</h1>
+      <p>Type your name below to see your position, join date, and staff ID.</p>
+    </div>
+
+    <div class="search-card glass">
+      <div class="search-row">
+        <div class="search-field">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input id="searchInput" type="text" placeholder="Enter your full name" autocomplete="off" />
+        </div>
+        <button class="btn-primary" id="searchBtn">Find</button>
+      </div>
+      <div class="live-note">
+        <div class="live-left"><span class="live-dot offline" id="liveDot"></span><span id="liveText">Loading…</span></div>
+        <button class="refresh-btn" id="refreshBtn">Refresh</button>
+      </div>
+    </div>
+
+    <div id="results"></div>
+  </main>
+
+  <footer>
+    <div class="social-row">
+      <a class="social-pill glass tiktok" href="https://www.tiktok.com/@yktmobilegadgetaccs?_r=1&_t=ZS-99sqi1z6HQ4" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 5.82c-.9-.79-1.47-1.9-1.6-3.14h-2.98v13.66c0 1.44-1.17 2.62-2.62 2.62-1.44 0-2.62-1.18-2.62-2.62 0-1.44 1.18-2.61 2.62-2.61.27 0 .53.04.78.12v-3.02c-.25-.03-.51-.05-.78-.05-3.12 0-5.65 2.52-5.65 5.63S6.28 22 9.4 22c3.11 0 5.63-2.52 5.63-5.63V9.01a8.36 8.36 0 0 0 4.97 1.63V7.65a5.4 5.4 0 0 1-3.4-1.83z"/></svg>
+        <span>TikTok Shop</span>
+      </a>
+      <a class="social-pill glass facebook" href="https://www.facebook.com/share/1JoQBQ8u43/" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 21v-7.9h2.65l.4-3.08H13.5V8.1c0-.89.25-1.5 1.52-1.5h1.63V3.87C16.36 3.83 15.36 3.75 14.2 3.75c-2.37 0-4 1.45-4 4.1v2.28H7.55v3.08H10.2V21h3.3z"/></svg>
+        <span>Facebook</span>
+      </a>
+    </div>
+    <div class="copyright">© <span id="year"></span> Yay Khae Taung Mobile. Internal staff tool.</div>
+  </footer>
+</div>
+
+<div class="admin-fab glass" id="adminFab" title="Admin">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+</div>
+
+<div id="toast"></div>
+
+<div class="modal-overlay" id="modalOverlay"><div class="modal" id="modalBody"></div></div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* =========================================================
+     CONFIG — edit these three values, then re-upload to GitHub.
+     ========================================================= */
+  var CONFIG = {
+    // Paste the "Publish to web" CSV link from your Google Sheet here.
+    // File > Share > Publish to web > select the sheet > CSV > Publish.
+    SHEET_CSV_URL: "https://docs.google.com/spreadsheets/d/e/2PACX-1vR_fUicyGvtu9srFkLAEhhjhTBtGcFjfNrWYnEB3ULbhCCIe3vQoqGHC4Z5zwWlJa7jOUeldCs3Yvs0/pub?output=csv",
+
+    // Optional: the normal Google Sheet link (for the admin panel's
+    // "Open staff sheet" button). Leave blank if you'd rather not show it.
+    SHEET_EDIT_URL: "",
+
+    // SHA-256 hash of your admin password. Leave blank to use the
+    // built-in generator inside the Admin panel on this page, then
+    // paste the result here and re-upload.
+    ADMIN_PASSWORD_HASH: ""
+  };
+  /* ========================================================= */
+
+  // ---------- theme ----------
+  var htmlEl = document.documentElement;
+  var sunPath = 'M12 3v2M12 19v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M3 12h2M19 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4M12 8a4 4 0 100 8 4 4 0 000-8z';
+  var moonPath = 'M21 12.8A9 9 0 1111.2 3 7 7 0 0021 12.8z';
+  function paintThemeIcon(theme){ document.getElementById('themeIcon').innerHTML = '<path d="' + (theme === 'dark' ? sunPath : moonPath) + '"/>'; }
+  function applyTheme(theme){ htmlEl.setAttribute('data-theme', theme); paintThemeIcon(theme); try { localStorage.setItem('ykt_theme', theme); } catch(e){} }
+  (function initTheme(){ var saved=null; try{saved=localStorage.getItem('ykt_theme');}catch(e){} applyTheme(saved==='light'?'light':'dark'); })();
+  document.getElementById('themeToggle').addEventListener('click', function(){ applyTheme(htmlEl.getAttribute('data-theme')==='dark'?'light':'dark'); });
+
+  // ---------- toast ----------
+  var toastTimer = null;
+  function toast(msg, kind){
+    var t = document.getElementById('toast');
+    t.textContent = msg; t.className = (kind || 'ok');
+    requestAnimationFrame(function(){ t.classList.add('show'); });
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 2600);
+  }
+
+  // ---------- helpers ----------
+  var AV_COLORS = ['#4C6FFF','#9333EA','#14B8A6','#F59E0B','#EF4444','#3B82F6','#EC4899'];
+  function colorFor(str){ var h=0; for(var i=0;i<str.length;i++){ h=(h*31+str.charCodeAt(i))>>>0; } return AV_COLORS[h % AV_COLORS.length]; }
+  function initials(name){ var p=(name||'').trim().split(/\s+/).filter(Boolean); if(!p.length) return '?'; if(p.length===1) return p[0].slice(0,2).toUpperCase(); return (p[0][0]+p[p.length-1][0]).toUpperCase(); }
+  function formatDate(v){
+    if(!v) return '—';
+    var d = new Date(v);
+    if (isNaN(d.getTime())) return v;
+    return d.toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' });
+  }
+  function esc(s){ return (s==null?'':String(s)).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  async function sha256Hex(text){
+    var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+    return Array.from(new Uint8Array(buf)).map(function(b){ return b.toString(16).padStart(2,'0'); }).join('');
+  }
+  function normKey(k){ return String(k||'').toLowerCase().replace(/[^a-z0-9]/g,''); }
+
+  // ---------- state ----------
+  var allStaff = [];
+  var lastQuery = '';
+  var lastSyncedAt = null;
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  function setLive(ok, text){
+    document.getElementById('liveDot').classList.toggle('offline', !ok);
+    document.getElementById('liveText').textContent = text;
+  }
+
+  // ---------- load from Google Sheet ----------
+  function rowsFromCsv(csvText){
+    var parsed = Papa.parse(csvText, { header: true, skipEmptyLines: true });
+    return (parsed.data || []).map(function(row, idx){
+      var out = { id: 'row' + idx };
+      Object.keys(row).forEach(function(k){
+        var nk = normKey(k);
+        if (nk === 'name') out.name = (row[k]||'').trim();
+        else if (nk === 'position' || nk === 'role' || nk === 'title') out.position = (row[k]||'').trim();
+        else if (nk === 'joindate' || nk === 'datejoined' || nk === 'joined') out.joinDate = (row[k]||'').trim();
+        else if (nk === 'staffid' || nk === 'id' || nk === 'employeeid') out.staffId = (row[k]||'').trim();
+      });
+      return out;
+    }).filter(function(r){ return r.name; });
+  }
+
+  async function loadStaff(showToastOnOk){
+    if (!CONFIG.SHEET_CSV_URL) {
+      setLive(false, 'Not configured');
+      renderSetupNeeded();
+      return;
+    }
+    setLive(false, 'Syncing…');
+    try {
+      var url = CONFIG.SHEET_CSV_URL + (CONFIG.SHEET_CSV_URL.indexOf('?') > -1 ? '&' : '?') + 'cb=' + Date.now();
+      var res = await fetch(url, { cache: 'no-store' });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      var text = await res.text();
+      allStaff = rowsFromCsv(text);
+      lastSyncedAt = new Date();
+      setLive(true, allStaff.length + ' staff · synced ' + lastSyncedAt.toLocaleTimeString());
+      if (showToastOnOk) toast('Staff list refreshed');
+      if (lastQuery) runSearch();
+      else if (!document.querySelector('#results .id-card, #results .match-list')) renderIdle();
+    } catch (e) {
+      setLive(false, 'Sync failed');
+      toast('Could not load the staff sheet — check your connection', 'err');
+    }
+  }
+
+  // ---------- search / rendering ----------
+  var resultsEl = document.getElementById('results');
+  function renderIdle(){ resultsEl.innerHTML = '<div class="glass state-msg"><strong>Ready when you are</strong>Search by your first or full name above.</div>'; }
+  function renderSetupNeeded(){
+    resultsEl.innerHTML = '<div class="glass state-msg"><strong>Almost set up</strong>' +
+      'This page needs a Google Sheet link. Open the HTML file, fill in <code>SHEET_CSV_URL</code> near the top of the script, and re-upload.</div>';
+  }
+  function renderNoMatch(q){ resultsEl.innerHTML = '<div class="glass state-msg"><strong>No staff found for "' + esc(q) + '"</strong>Double-check the spelling, or ask an admin to add your record.</div>'; }
+  function renderMatchList(matches){
+    var html = '<div class="glass match-list">';
+    matches.forEach(function(s){
+      html += '<div class="match-item" data-id="' + esc(s.id) + '">' +
+        '<div class="avatar-sm" style="background:' + colorFor(s.name||s.id) + '">' + esc(initials(s.name)) + '</div>' +
+        '<div style="min-width:0;"><div class="name">' + esc(s.name) + '</div><div class="pos">' + esc(s.position||'Staff') + '</div></div></div>';
+    });
+    html += '</div>';
+    resultsEl.innerHTML = html;
+    resultsEl.querySelectorAll('.match-item').forEach(function(el){
+      el.addEventListener('click', function(){
+        var s = allStaff.find(function(x){ return x.id === el.getAttribute('data-id'); });
+        if (s) renderIdCard(s);
+      });
+    });
+  }
+  function renderIdCard(s){
+    var color = colorFor(s.name||s.id);
+    resultsEl.innerHTML =
+      '<div class="glass id-card">' +
+        '<div class="id-top"><div class="avatar-lg" style="background:' + color + '">' + esc(initials(s.name)) + '</div>' +
+        '<div><h2>' + esc(s.name) + '</h2><div class="role">' + esc(s.position||'Staff') + '</div></div></div>' +
+        '<div class="id-grid">' +
+          '<div class="id-field code full"><div class="label">Staff ID</div><div class="value">' + esc(s.staffId||'—') + '</div></div>' +
+          '<div class="id-field"><div class="label">Position</div><div class="value">' + esc(s.position||'—') + '</div></div>' +
+          '<div class="id-field"><div class="label">Joined</div><div class="value">' + esc(formatDate(s.joinDate)) + '</div></div>' +
+        '</div>' +
+        '<div class="id-actions">' +
+          '<button class="btn-ghost" id="copyIdBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/></svg>Copy ID</button>' +
+          '<button class="btn-ghost" id="printBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Print</button>' +
+        '</div></div>';
+    document.getElementById('copyIdBtn').addEventListener('click', function(){
+      var txt = s.staffId || '';
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(function(){ toast('Staff ID copied'); }).catch(function(){ toast('Could not copy', 'err'); });
+      else toast('Copy not supported here', 'err');
+    });
+    document.getElementById('printBtn').addEventListener('click', function(){ window.print(); });
+  }
+  function runSearch(){
+    var q = document.getElementById('searchInput').value.trim();
+    lastQuery = q;
+    if (!q) { renderIdle(); return; }
+    if (!CONFIG.SHEET_CSV_URL) { renderSetupNeeded(); return; }
+    var ql = q.toLowerCase();
+    var matches = allStaff.filter(function(s){ return (s.name||'').toLowerCase().indexOf(ql) !== -1; });
+    if (!matches.length) { renderNoMatch(q); return; }
+    if (matches.length === 1) { renderIdCard(matches[0]); return; }
+    renderMatchList(matches);
+  }
+  document.getElementById('searchBtn').addEventListener('click', runSearch);
+  document.getElementById('searchInput').addEventListener('keydown', function(e){ if (e.key==='Enter') runSearch(); });
+  document.getElementById('refreshBtn').addEventListener('click', function(){ loadStaff(true); });
+
+  renderIdle();
+  loadStaff(false);
+
+  // ================= ADMIN =================
+  var overlay = document.getElementById('modalOverlay');
+  var modalBody = document.getElementById('modalBody');
+  var adminUnlocked = false;
+
+  function openModal(html){ modalBody.innerHTML = html; overlay.classList.add('open'); }
+  function closeModal(){ overlay.classList.remove('open'); modalBody.innerHTML = ''; }
+  overlay.addEventListener('click', function(e){ if (e.target === overlay) closeModal(); });
+
+  function headHtml(title){
+    return '<div class="modal-head"><h3>' + esc(title) + '</h3>' +
+      '<div class="modal-close" id="modalCloseBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div></div>';
+  }
+  function wireClose(){ var b=document.getElementById('modalCloseBtn'); if(b) b.addEventListener('click', closeModal); }
+
+  document.getElementById('adminFab').addEventListener('click', function(){
+    if (adminUnlocked) { renderDashboard(); return; }
+    if (!CONFIG.ADMIN_PASSWORD_HASH) { renderHashTool(false); return; }
+    renderLogin();
+  });
+
+  function renderLogin(){
+    openModal(headHtml('Admin login') +
+      '<div class="field"><label>Admin password</label><input type="password" id="loginPw" placeholder="Enter password"></div>' +
+      '<div class="field-error" id="loginErr"></div>' +
+      '<button class="modal-btn" id="loginSubmit">Unlock</button>' +
+      '<button class="link-btn" id="forgotBtn">Forgot password / set a new one</button>');
+    wireClose();
+    var pwInput = document.getElementById('loginPw');
+    pwInput.addEventListener('keydown', function(e){ if (e.key==='Enter') document.getElementById('loginSubmit').click(); });
+    document.getElementById('loginSubmit').addEventListener('click', async function(){
+      var errEl = document.getElementById('loginErr');
+      var hash = await sha256Hex(pwInput.value);
+      if (hash === CONFIG.ADMIN_PASSWORD_HASH) { adminUnlocked = true; renderDashboard(); }
+      else errEl.textContent = 'Incorrect password.';
+    });
+    document.getElementById('forgotBtn').addEventListener('click', function(){ renderHashTool(true); });
+  }
+
+  function renderHashTool(cameFromLogin){
+    openModal(headHtml('Set admin password') +
+      '<p class="field-hint" style="margin-bottom:14px;">Type a new password, generate its code, then paste that code into <code>ADMIN_PASSWORD_HASH</code> near the top of the HTML file and re-upload it to GitHub.</p>' +
+      '<div class="field"><label>New password</label><input type="password" id="newPw" placeholder="At least 6 characters"></div>' +
+      '<button class="modal-btn" id="genBtn">Generate code</button>' +
+      '<div id="hashOut"></div>' +
+      (cameFromLogin ? '<button class="modal-btn secondary" id="backBtn" style="margin-top:8px;">Back to login</button>' : ''));
+    wireClose();
+    if (cameFromLogin) document.getElementById('backBtn').addEventListener('click', renderLogin);
+    document.getElementById('genBtn').addEventListener('click', async function(){
+      var pw = document.getElementById('newPw').value;
+      if (pw.length < 6) { toast('Use at least 6 characters', 'err'); return; }
+      var hash = await sha256Hex(pw);
+      document.getElementById('hashOut').innerHTML =
+        '<div class="hash-box" id="hashBox">' + hash + '</div>' +
+        '<button class="modal-btn secondary" id="copyHashBtn">Copy code</button>';
+      document.getElementById('copyHashBtn').addEventListener('click', function(){
+        navigator.clipboard.writeText(hash).then(function(){ toast('Code copied — paste it into ADMIN_PASSWORD_HASH'); });
+      });
+    });
+  }
+
+  function renderDashboard(){
+    var syncedText = lastSyncedAt ? lastSyncedAt.toLocaleString() : 'Not yet synced';
+    var sheetBtn = CONFIG.SHEET_EDIT_URL
+      ? '<a class="modal-btn" style="display:flex;align-items:center;justify-content:center;text-decoration:none;" href="' + esc(CONFIG.SHEET_EDIT_URL) + '" target="_blank" rel="noopener">Open staff Google Sheet</a>'
+      : '<div class="field-hint">Add your Google Sheet\'s normal link to <code>SHEET_EDIT_URL</code> in the file to get a shortcut button here.</div>';
+    openModal(headHtml('Admin') +
+      '<p class="field-hint" style="margin-bottom:14px;">Staff records live in your Google Sheet. Add, edit, or remove rows there — everyone here sees the change next time the page syncs.</p>' +
+      sheetBtn +
+      '<div class="section-title" style="margin-top:18px;"></div>' +
+      '<div class="info-row"><span>Staff on record</span><span>' + allStaff.length + '</span></div>' +
+      '<div class="info-row"><span>Last synced</span><span>' + esc(syncedText) + '</span></div>' +
+      '<button class="link-btn" id="changePwBtn" style="margin-top:10px;">Change admin password</button>');
+    wireClose();
+    document.getElementById('changePwBtn').addEventListener('click', function(){ renderHashTool(false); });
+  }
+
+})();
+</script>
+</body>
+</html>
